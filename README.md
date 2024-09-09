@@ -8,6 +8,7 @@ The project assumes that the shop does not have any authentication.
 - store the cart on the backend to make it persistent between user sessions
 - get the category slug from the CMS instead of the title
 - instead of a simple loading spinner consider creating skeleton components
+- consider using the blurred image first to show the loading state to the user as fast as possible.
 
 ## State management
 Because the fake store API returns hardcoded values from the cart I decided not to include the get cart request. Cart is based only on the reducer state. In the reducer state, I decided to store elements like in the Redux entity store. Thanks for having ids and objects separately it is easy to manipulate like sorting per supplier. I decided to keep only the IDs and quantities because in real-world scenarios, the cart would be stored in a database. There is a danger that after some time content management team will change the product data or even remove it from the store. In that case, the cart would be stale.
