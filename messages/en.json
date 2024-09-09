@@ -1,0 +1,25 @@
+{
+  "Nav": {
+    "aria": {
+      "cart": "Cart"
+    }
+  },
+  "home": {
+    "title": "Categories"
+  },
+  "category": {
+    "img-alt": "Image for {category} category"
+  },
+  "cart": {
+    "title": "Cart"
+  },
+  "CartSummary": {
+    "title": "Order summary",
+    "total": "Order total",
+    "checkout": "Checkout"
+  },
+  "errors": {
+    "unhandled": "Something went wrong",
+    "try-again": "Try again"
+  }
+}
