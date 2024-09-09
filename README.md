@@ -1,29 +1,27 @@
-# Create T3 App
+# Fake store
+The project assumes that the shop does not have any authentication.
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+## Improvements
 
-## What's next? How do I make an app with this?
+### General
+- add authentication to reference saved cart stored in the backend
+- store the cart on the backend to make it persistent between user sessions
+- get the category slug from the CMS instead of the title
+- instead of a simple loading spinner consider creating skeleton components
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+## State management
+Because the fake store API returns hardcoded values from the cart I decided not to include the get cart request. Cart is based only on the reducer state. In the reducer state, I decided to store elements like in the Redux entity store. Thanks for having ids and objects separately it is easy to manipulate like sorting per supplier. I decided to keep only the IDs and quantities because in real-world scenarios, the cart would be stored in a database. There is a danger that after some time content management team will change the product data or even remove it from the store. In that case, the cart would be stale.
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+- add asynchronous actions like async thunk or write state management with the @tanstack/query library that would allow easily to implement optimistic updates.
+- in my example single source of truth is a reducer in the real world it would be the backend so all the actions should update BE first then the mentioned optimistic update can be considered
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+### Error handling
+- create better error handling with more descriptive messages based on the response
+- consider adding a monitoring service to report unexpected errors
+- create more granular error boundaries to prevent of failing the whole page
 
-## Learn More
+### Page renders
+- consider adding generateStaticParams to render static pages on build time
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
-
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
-
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
-
-## How do I deploy this?
-
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+### Seo
+- generate metadata per page based on the category data
