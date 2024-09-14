@@ -63,16 +63,3 @@ export const formatPrice = (
     currency: currency,
   }).format(price);
 };
-
-/////////// Just for mocking purposes ///////////
-
-export const fakeApiCall = async (isError?: boolean) => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      if (isError) {
-        reject(new Error("Something went wrong"));
-      }
-      resolve({ data: "Success" });
-    }, 1000);
-  });
-};
