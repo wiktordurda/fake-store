@@ -30,3 +30,23 @@ export const addCartProduct = async ({
 
   dispatch(update({ id, quantity: product.quantity }));
 };
+
+export interface UpdateCartProductVariables {
+  id: Product["id"];
+  quantity: number;
+  dispatch: CartDispatch;
+}
+
+export const updateCartProduct = async ({
+  id,
+  quantity,
+  dispatch,
+}: UpdateCartProductVariables) => {
+  const { isError, error } = await withFormattedResponse(
+    updateCart(id, quantity),
+  );
+
+  if (isError) throw error;
+
+  dispatch(update({ id, quantity }));
+};

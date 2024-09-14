@@ -13,12 +13,17 @@ import {
   SelectValue,
 } from "../../components/ui/select";
 import { useCart } from "../contexts/cartContext";
-import { remove, update } from "../contexts/cartActions";
+import { remove } from "../contexts/cartActions";
 import { type Locale } from "../../i18n/routing";
 import Spinner from "../../components/ui/Spinner";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
+import { useMutation } from "../../lib/hooks/useMutation";
+import {
+  updateCartProduct,
+  type UpdateCartProductVariables,
+} from "../contexts/cartAsyncActions";
 
 const STOCK = Array.from({ length: 10 }, (_, index) => index + 1);
 
@@ -42,6 +47,14 @@ const CartRecord = ({
 
   const [isLoading, setIsLoading] = useState(false);
 
+  const { mutate: update, isLoading: isUpdateLoading } = useMutation<
+    void,
+    Error,
+    UpdateCartProductVariables
+  >({
+    mutationFn: updateCartProduct,
+  });
+
   const onHandleRemove = async (id: Product["id"]) => {
     try {
       setIsLoading(true);
@@ -54,17 +67,17 @@ const CartRecord = ({
     }
   };
 
-  const onHandleUpdate = async (id: Product["id"], quantity: number) => {
-    try {
-      setIsLoading(true);
-      await fakeApiCall();
-      dispatch(update({ id, quantity }));
-    } catch {
-      toast.error(t("unhandled"), {});
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const onHandleUpdate = useCallback(
+    (id: Product["id"], quantity: number) => {
+      update(
+        { id, quantity, dispatch },
+        {
+          onError: () => toast.error(t("unhandled")),
+        },
+      );
+    },
+    [dispatch, t, update],
+  );
 
   const formattedPrice = useMemo(
     () => formatPrice(price, "USD", locale),
@@ -72,7 +85,7 @@ const CartRecord = ({
   );
 
   return (
-    <Spinner spinning={isLoading}>
+    <Spinner spinning={isUpdateLoading || isLoading}>
       <div className="grid grid-cols-[auto_1fr_auto] gap-4 border-b pb-4 sm:grid-cols-[auto_1fr_minmax(64px,_auto)_auto]">
         <Image
           src={image}
