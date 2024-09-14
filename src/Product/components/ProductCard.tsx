@@ -2,8 +2,7 @@ import Image from "next/image";
 import { type Product } from "../models/product";
 import { formatPrice } from "../../lib/utils";
 import { Plus } from "lucide-react";
-import ProductAction from "./ProductAction";
-import { add } from "../../Cart/contexts/cartActions";
+import AddProductButton from "./AddProductButton";
 import { type Locale } from "../../i18n/routing";
 import { type Currency } from "../../models/currency";
 
@@ -36,9 +35,9 @@ const ProductCard = ({
       <h4 className="font-medium">{title}</h4>
       <div className="mt-auto flex items-center justify-between gap-2">
         <span className="font-semibold">{formattedPrice}</span>
-        <ProductAction action={add({ id })} size="icon">
+        <AddProductButton id={id} size="icon">
           <Plus />
-        </ProductAction>
+        </AddProductButton>
       </div>
     </article>
   );
