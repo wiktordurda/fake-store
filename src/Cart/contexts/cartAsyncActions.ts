@@ -2,7 +2,7 @@ import { withFormattedResponse } from "../../lib/utils";
 import { type Product } from "../../Product/models/product";
 import { updateCart } from "../api/cartApi";
 import { type CartStoreProduct } from "../models/cart";
-import { update } from "./cartActions";
+import { remove, update } from "./cartActions";
 import { type CartDispatch, type CartState } from "./cartContext";
 
 export interface AddCartProductVariables {
@@ -49,4 +49,20 @@ export const updateCartProduct = async ({
   if (isError) throw error;
 
   dispatch(update({ id, quantity }));
+};
+
+export interface RemoveCartProductVariables {
+  id: Product["id"];
+  dispatch: CartDispatch;
+}
+
+export const removeCartProduct = async ({
+  id,
+  dispatch,
+}: RemoveCartProductVariables) => {
+  const { isError, error } = await withFormattedResponse(updateCart(id, 0));
+
+  if (isError) throw error;
+
+  dispatch(remove({ id }));
 };

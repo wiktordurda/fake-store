@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { type Product } from "../../Product/models/product";
-import { fakeApiCall, formatPrice } from "../../lib/utils";
+import { formatPrice } from "../../lib/utils";
 import { XIcon } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import {
@@ -13,14 +13,15 @@ import {
   SelectValue,
 } from "../../components/ui/select";
 import { useCart } from "../contexts/cartContext";
-import { remove } from "../contexts/cartActions";
 import { type Locale } from "../../i18n/routing";
 import Spinner from "../../components/ui/Spinner";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 import { useMutation } from "../../lib/hooks/useMutation";
 import {
+  removeCartProduct,
+  type RemoveCartProductVariables,
   updateCartProduct,
   type UpdateCartProductVariables,
 } from "../contexts/cartAsyncActions";
@@ -44,9 +45,6 @@ const CartRecord = ({
 }: CartRecordProps) => {
   const { dispatch } = useCart();
   const t = useTranslations("errors");
-
-  const [isLoading, setIsLoading] = useState(false);
-
   const { mutate: update, isLoading: isUpdateLoading } = useMutation<
     void,
     Error,
@@ -54,18 +52,25 @@ const CartRecord = ({
   >({
     mutationFn: updateCartProduct,
   });
+  const { mutate: remove, isLoading: isRemoveLoading } = useMutation<
+    void,
+    Error,
+    RemoveCartProductVariables
+  >({
+    mutationFn: removeCartProduct,
+  });
 
-  const onHandleRemove = async (id: Product["id"]) => {
-    try {
-      setIsLoading(true);
-      await fakeApiCall();
-      dispatch(remove({ id }));
-    } catch {
-      toast.error(t("unhandled"), {});
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const onHandleRemove = useCallback(
+    (id: Product["id"]) => {
+      remove(
+        { id, dispatch },
+        {
+          onError: () => toast.error(t("unhandled")),
+        },
+      );
+    },
+    [dispatch, t, remove],
+  );
 
   const onHandleUpdate = useCallback(
     (id: Product["id"], quantity: number) => {
@@ -85,7 +90,7 @@ const CartRecord = ({
   );
 
   return (
-    <Spinner spinning={isUpdateLoading || isLoading}>
+    <Spinner spinning={isUpdateLoading || isRemoveLoading}>
       <div className="grid grid-cols-[auto_1fr_auto] gap-4 border-b pb-4 sm:grid-cols-[auto_1fr_minmax(64px,_auto)_auto]">
         <Image
           src={image}
