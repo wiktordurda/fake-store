@@ -29,6 +29,7 @@ const ProductCard = ({
           className="object-contain"
           src={image}
           alt={`Should come from the CMS`}
+          sizes="(max-width: 640px) 100vw,  (max-width: 1024px) 50vw,25vw"
           fill
         />
       </div>
