@@ -3,6 +3,7 @@ import { type Locale } from "../../../../../i18n/routing";
 import { getCategoryProducts } from "../../../../../Product/api/productApi";
 import ProductCard from "../../../../../Product/components/ProductCard";
 import Error from "../../../../../components/ui/Error";
+import { withFormattedResponse } from "../../../../../lib/utils";
 
 interface CategoryPageProps {
   params: {
@@ -15,9 +16,11 @@ const CategoryPage = async ({
   params: { slug, locale },
 }: CategoryPageProps) => {
   const category = decodeURIComponent(slug);
-  const { data: products, error } = await getCategoryProducts(category);
+  const { data: products, isError } = await withFormattedResponse(
+    getCategoryProducts(category),
+  );
 
-  if (error) {
+  if (isError) {
     return <Error />;
   }
 

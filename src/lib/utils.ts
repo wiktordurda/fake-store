@@ -2,7 +2,6 @@ import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { type Currency } from "../models/currency";
 import { type Locale } from "../i18n/routing";
-import { error } from "console";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -21,13 +20,15 @@ export const api = fetch;
 
 interface ApiResponseError {
   data: null;
-  error: true;
+  isError: true;
+  error: Error;
   response: Response;
 }
 
 interface ApiResponseSuccess<TData> {
   data: TData;
-  error: false;
+  isError: false;
+  error: null;
   response: Response;
 }
 
@@ -39,12 +40,17 @@ export const withFormattedResponse = async <TData = unknown>(
   const response = await request;
 
   if (!response.ok) {
-    return { data: null, error: true, response };
+    return {
+      data: null,
+      isError: true,
+      error: new Error(`Request failed with status ${response.status}`),
+      response,
+    };
   }
 
   const data = await response.json();
 
-  return { data, error: false, response };
+  return { data, isError: false, error: null, response };
 };
 
 export const formatPrice = (

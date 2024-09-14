@@ -4,12 +4,13 @@ import CategoryCard from "../../../Category/components/CategoryCard";
 import { Link } from "../../../i18n/routing";
 import CardGrid from "../../../components/ui/CardGrid";
 import Error from "../../../components/ui/Error";
+import { withFormattedResponse } from "../../../lib/utils";
 
 const HomePage = async () => {
   const t = await getTranslations("home");
-  const { data, error } = await getAllCategories();
+  const { data, isError } = await withFormattedResponse(getAllCategories());
 
-  if (error) {
+  if (isError) {
     return <Error />;
   }
 
